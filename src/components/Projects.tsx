@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import React, { useRef, useState } from 'react'
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const projectsData = [
   {
@@ -10,7 +11,7 @@ const projectsData = [
     techStack: ["Python", "Flask", "MongoDB", "AssemblyAI", "NLTK", "Bootstrap"],
     githubLink: "https://github.com/adiancodes/sumeazylite",
     liveLink: "https://github.com/adiancodes/sumeazylite",
-    imagePath: "/images/sumeazy.png"
+    images: ["/images/sumeazy1.png", "/images/sumeazy2.png", "/images/sumeazy3.png"]
   },
   {
     title: "Smart Inventory Management Platform",
@@ -18,7 +19,7 @@ const projectsData = [
     techStack: ["Java", "Spring Boot", "PostgreSQL", "REST APIs"],
     githubLink: "https://github.com/adiancodes/smartinventory",
     liveLink: "https://github.com/adiancodes/smartinventory",
-    imagePath: "/images/inventory.png"
+    images: ["/images/inventory1.png", "/images/inventory2.png", "/images/inventory3.png"]
   },
   {
     title: "Pocket Legal Assistant",
@@ -26,7 +27,7 @@ const projectsData = [
     techStack: ["Python", "scikit-learn", "Streamlit", "NLP", "Machine Learning"],
     githubLink: "https://github.com/adiancodes/lawProject",
     liveLink: "https://meetyourpersonallawbuddy.streamlit.app",
-    imagePath: "/images/lawbuddy.png"
+    images: ["/images/legal1.png", "/images/legal2.png", "/images/legal3.png"]
   },
   {
     title: "MedBot: Medical Document Q&A",
@@ -34,14 +35,40 @@ const projectsData = [
     techStack: ["Python", "Google Gemini API", "FAISS", "Streamlit", "RAG"],
     githubLink: "https://github.com/adiancodes/medBot",
     liveLink: "https://github.com/adiancodes/medBot",
-    imagePath: "/images/medbot.png"
+    images: ["/images/medbot1.png", "/images/medbot2.png", "/images/medbot3.png"]
   }
 ]
 
+const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? '100%' : '-100%',
+  }),
+  center: {
+    x: 0,
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? '100%' : '-100%',
+  })
+}
+
 const ProjectItem = ({ project, index }: { project: typeof projectsData[0], index: number }) => {
   const containerRef = useRef<HTMLDivElement>(null)
+  
+  // Carousel State
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [direction, setDirection] = useState(1)
 
-  // Scroll-linked physics for the 3D laptop hinge — each project tracks its own scroll position
+  const handleNext = () => {
+    setDirection(1)
+    setCurrentIndex((prev) => (prev + 1) % project.images.length)
+  }
+
+  const handlePrev = () => {
+    setDirection(-1)
+    setCurrentIndex((prev) => (prev - 1 + project.images.length) % project.images.length)
+  }
+
+  // Scroll-linked physics for the 3D laptop hinge
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "center center"]
@@ -57,12 +84,11 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
     <div ref={containerRef} className="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-32 md:mb-48">
 
       {/* DOM-Based 3D Laptop Mockup */}
-      {/* Mobile: Laptop is at the bottom (order-last). Desktop: Left for even (order-1), Right for odd (order-2) */}
       <div className={`col-span-1 lg:col-span-7 relative z-10 h-[300px] md:h-[400px] lg:h-[500px] flex items-center justify-center order-last ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
 
         {/* Laptop Wrapper with Perspective */}
         <div
-          className="relative w-full max-w-[600px] aspect-[16/10] flex flex-col items-center justify-end"
+          className="relative w-full max-w-[600px] aspect-[16/10] flex flex-col items-center justify-end mb-16 md:mb-0"
           style={{ perspective: "1000px" }}
         >
           {/* The Lid (Screen) - Hinges open from the bottom */}
@@ -74,14 +100,24 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
             }}
             className="relative w-[90%] aspect-[16/10] bg-slate-900 rounded-t-xl lg:rounded-t-3xl border-4 border-slate-800 border-b-0 overflow-hidden shadow-2xl z-20"
           >
-            {/* Screen Content / Image */}
+            {/* Screen Content / Image Carousel */}
             <div className="absolute inset-1 bg-black rounded-t-lg lg:rounded-t-2xl overflow-hidden flex items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={project.imagePath}
-                alt={project.title}
-                className="w-full h-full object-cover opacity-80 transition-opacity duration-300 hover:opacity-100"
-              />
+              <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+                <AnimatePresence initial={false} custom={direction}>
+                  <motion.img
+                    key={currentIndex}
+                    src={project.images[currentIndex]}
+                    alt={`${project.title} screenshot ${currentIndex + 1}`}
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ ease: [0.33, 1, 0.68, 1], duration: 0.8 }}
+                    className="absolute top-0 left-0 w-full h-full object-cover"
+                  />
+                </AnimatePresence>
+              </div>
             </div>
           </motion.div>
 
@@ -90,11 +126,56 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
             {/* Trackpad notch */}
             <div className="w-1/6 h-[4px] bg-slate-400 dark:bg-slate-800 rounded-b-md mx-auto absolute top-0"></div>
           </div>
+
+          {/* Navigation Controls (Keyboard-Style Arrows) */}
+          <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-4 z-30">
+            <motion.button
+              onClick={handlePrev}
+              aria-label="Previous image"
+              whileHover="hover"
+              whileTap="tap"
+              variants={{
+                hover: { scale: 1.05, boxShadow: "0px 0px 8px rgba(0, 229, 255, 0.4)" },
+                tap: { 
+                  scale: 0.92, 
+                  backgroundColor: "rgba(0, 229, 255, 0.1)", 
+                  borderColor: "rgba(0, 229, 255, 1)",
+                  boxShadow: "inset 0px 2px 4px rgba(0,0,0,0.2)" 
+                }
+              }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              className="w-10 h-10 flex items-center justify-center rounded-md border border-slate-900 dark:border-white text-slate-900 dark:text-white hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-colors duration-300 shadow-sm bg-background"
+            >
+              <motion.div variants={{ tap: { x: -2 } }}>
+                <ChevronLeft className="w-5 h-5" />
+              </motion.div>
+            </motion.button>
+            <motion.button
+              onClick={handleNext}
+              aria-label="Next image"
+              whileHover="hover"
+              whileTap="tap"
+              variants={{
+                hover: { scale: 1.05, boxShadow: "0px 0px 8px rgba(0, 229, 255, 0.4)" },
+                tap: { 
+                  scale: 0.92, 
+                  backgroundColor: "rgba(0, 229, 255, 0.1)", 
+                  borderColor: "rgba(0, 229, 255, 1)",
+                  boxShadow: "inset 0px 2px 4px rgba(0,0,0,0.2)" 
+                }
+              }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              className="w-10 h-10 flex items-center justify-center rounded-md border border-slate-900 dark:border-white text-slate-900 dark:text-white hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-colors duration-300 shadow-sm bg-background"
+            >
+              <motion.div variants={{ tap: { x: 2 } }}>
+                <ChevronRight className="w-5 h-5" />
+              </motion.div>
+            </motion.button>
+          </div>
         </div>
       </div>
 
       {/* Project Text Content */}
-      {/* Mobile: Text is on top (order-first). Desktop: Right for even (order-2), Left for odd (order-1) */}
       <motion.div
         initial="hidden"
         whileInView="visible"
