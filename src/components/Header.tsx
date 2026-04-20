@@ -6,10 +6,11 @@ import { useTheme } from "next-themes"
 import { motion, useScroll, useMotionValueEvent } from "framer-motion"
 
 const navLinks = [
-  { number: "01.", name: "About",      href: "#about"      },
-  { number: "02.", name: "Experience", href: "#experience" },
-  { number: "03.", name: "Projects",   href: "#projects"   },
-  { number: "04.", name: "Contact",    href: "#contact"    },
+  { number: "01.", name: "About",        href: "#about"        },
+  { number: "02.", name: "Experience",   href: "#experience"   },
+  { number: "03.", name: "Projects",     href: "#projects"     },
+  { number: "04.", name: "Achievements", href: "#achievements" },
+  { number: "05.", name: "Contact",      href: "#contact"      },
 ]
 
 export function Header() {

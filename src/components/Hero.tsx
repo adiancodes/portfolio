@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 
-const roles = ["AI-ML Enthusiast", "CS Student", "Data Scientist", "Problem Solver"]
+const roles = ["AI-ML Enthusiast", "CS Student", "Data Science", "Problem Solver"]
 
 // Premium cubic-bezier — mimics a spring without overshoot:
 // fast start, decelerates elegantly into rest position
@@ -177,7 +177,7 @@ export const Hero = () => {
                 animate={{ y: 0 }}
                 transition={{ ease: [0.33, 1, 0.68, 1], duration: 1 }}
               >
-                Aditya Ranjan.
+                Aditya Ranjan
               </motion.span>
             </div>
           </h1>
