@@ -6,6 +6,21 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const projectsData = [
   {
+    title: "Pocket Legal Assistant",
+    description: "An academic ML application that classifies plain-language legal issues into nine categories. It utilizes a TF-IDF vectorizer and a Support Vector Classifier (SVC) to identify relevant Indian statutes and recommend immediate courses of action.",
+    techStack: ["Python", "scikit-learn", "Streamlit", "NLP", "Machine Learning"],
+    githubLink: "https://github.com/adiancodes/lawProject",
+    liveLink: "https://lawproject-z3ls.onrender.com",
+    images: ["/images/legal1.jpeg", "/images/legal2.jpeg"]
+  },
+  {
+    title: "Smart Inventory Management Platform",
+    description: "A robust, real-time inventory tracking system designed to optimize supply chain operations. Built with a scalable Java backend, it features automated stock monitoring, secure RESTful APIs, and role-based access controls for enterprise-grade data management.",
+    techStack: ["Java", "Spring Boot", "PostgreSQL", "REST APIs"],
+    githubLink: "https://github.com/adiancodes/smartinventory",
+    images: ["/images/inventory1.png", "/images/inventory2.png", "/images/inventory3.png"]
+  },
+  {
     title: "Sumeazy: AI Summarizer",
     description: "An NLP-driven web application that generates concise summaries for news articles and YouTube videos. Built with a responsive frontend and engineered with a Flask and PyMongo backend, featuring secure user authentication and history tracking.",
     techStack: ["Python", "Flask", "MongoDB", "AssemblyAI", "NLTK", "Bootstrap"],
@@ -14,28 +29,12 @@ const projectsData = [
     images: ["/images/sumeazy1.png", "/images/sumeazy2.png", "/images/sumeazy3.png"]
   },
   {
-    title: "Smart Inventory Management Platform",
-    description: "A robust, real-time inventory tracking system designed to optimize supply chain operations. Built with a scalable Java backend, it features automated stock monitoring, secure RESTful APIs, and role-based access controls for enterprise-grade data management.",
-    techStack: ["Java", "Spring Boot", "PostgreSQL", "REST APIs"],
-    githubLink: "https://github.com/adiancodes/smartinventory",
-    liveLink: "https://github.com/adiancodes/smartinventory",
-    images: ["/images/inventory1.png", "/images/inventory2.png", "/images/inventory3.png"]
-  },
-  {
-    title: "Pocket Legal Assistant",
-    description: "An academic ML application that classifies plain-language legal issues into nine categories. It utilizes a TF-IDF vectorizer and a Support Vector Classifier (SVC) to identify relevant Indian statutes and recommend immediate courses of action.",
-    techStack: ["Python", "scikit-learn", "Streamlit", "NLP", "Machine Learning"],
-    githubLink: "https://github.com/adiancodes/lawProject",
-    liveLink: "https://meetyourpersonallawbuddy.streamlit.app",
-    images: ["/images/legal1.png", "/images/legal2.png", "/images/legal3.png"]
-  },
-  {
     title: "MedBot: Medical Document Q&A",
     description: "A Retrieval-Augmented Generation (RAG) system that allows users to query medical PDFs and receive context-aware answers. It utilizes FAISS for efficient vector similarity search and integrates Google Gemini AI to process relevant document chunks, ensuring data privacy and source transparency.",
     techStack: ["Python", "Google Gemini API", "FAISS", "Streamlit", "RAG"],
     githubLink: "https://github.com/adiancodes/medBot",
-    liveLink: "https://github.com/adiancodes/medBot",
-    images: ["/images/medbot1.png", "/images/medbot2.png", "/images/medbot3.png"]
+    liveLink: "https://huggingface.co/spaces/adianDeploys/medbot",
+    images: ["/images/medbot1.jpeg", "/images/medbot2.jpeg", "/images/medbot3.jpeg"]
   }
 ]
 
@@ -53,7 +52,7 @@ const slideVariants = {
 
 const ProjectItem = ({ project, index }: { project: typeof projectsData[0], index: number }) => {
   const containerRef = useRef<HTMLDivElement>(null)
-  
+
   // Carousel State
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState(1)
@@ -136,11 +135,11 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
               whileTap="tap"
               variants={{
                 hover: { scale: 1.05, boxShadow: "0px 0px 8px rgba(0, 229, 255, 0.4)" },
-                tap: { 
-                  scale: 0.92, 
-                  backgroundColor: "rgba(0, 229, 255, 0.1)", 
+                tap: {
+                  scale: 0.92,
+                  backgroundColor: "rgba(0, 229, 255, 0.1)",
                   borderColor: "rgba(0, 229, 255, 1)",
-                  boxShadow: "inset 0px 2px 4px rgba(0,0,0,0.2)" 
+                  boxShadow: "inset 0px 2px 4px rgba(0,0,0,0.2)"
                 }
               }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -157,11 +156,11 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
               whileTap="tap"
               variants={{
                 hover: { scale: 1.05, boxShadow: "0px 0px 8px rgba(0, 229, 255, 0.4)" },
-                tap: { 
-                  scale: 0.92, 
-                  backgroundColor: "rgba(0, 229, 255, 0.1)", 
+                tap: {
+                  scale: 0.92,
+                  backgroundColor: "rgba(0, 229, 255, 0.1)",
                   borderColor: "rgba(0, 229, 255, 1)",
-                  boxShadow: "inset 0px 2px 4px rgba(0,0,0,0.2)" 
+                  boxShadow: "inset 0px 2px 4px rgba(0,0,0,0.2)"
                 }
               }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -199,9 +198,15 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
           variants={{ hidden: { y: 50, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
           className="text-3xl lg:text-4xl font-bold text-foreground mb-6 tracking-tight hover:text-primary transition-colors duration-300"
         >
-          <a href={project.liveLink} target="_blank" rel="noopener noreferrer">
-            {project.title}
-          </a>
+          {/* @ts-ignore - liveLink is optional */}
+          {project.liveLink ? (
+            // @ts-ignore
+            <a href={project.liveLink} target="_blank" rel="noopener noreferrer">
+              {project.title}
+            </a>
+          ) : (
+            <span>{project.title}</span>
+          )}
         </motion.h3>
 
         <motion.div
@@ -231,13 +236,17 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
               <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
             </svg>
           </a>
-          <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="text-foreground/80 hover:text-primary transition-colors" aria-label="External Link">
-            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-              <polyline points="15 3 21 3 21 9"></polyline>
-              <line x1="10" y1="14" x2="21" y2="3"></line>
-            </svg>
-          </a>
+          {/* @ts-ignore */}
+          {project.liveLink && (
+            // @ts-ignore
+            <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="text-foreground/80 hover:text-primary transition-colors" aria-label="External Link">
+              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          )}
         </motion.div>
       </motion.div>
     </div>

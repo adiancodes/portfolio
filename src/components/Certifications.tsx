@@ -7,14 +7,12 @@ const achievementsData = [
   {
     name: "Global Rank 1 - CodeChef Challenge",
     detail: "CodeChef Weekend Dev Challenge 31 | 2024",
-    description: "Secured a perfect score of 600/600 in Data Analysis & Visualization.",
-    link: "https://example.com/codechef-cert"
+    description: "Secured a perfect score of 600/600 in Data Analysis & Visualization."
   },
   {
     name: "MAHE Achievers Scholarship",
     detail: "Manipal Institute of Technology | 2024",
-    description: "Awarded for ranking in the top 5% of the branch for academic excellence.",
-    link: "https://example.com/mahe-cert"
+    description: "Awarded for ranking in the top 5% of the branch for academic excellence."
   },
   {
     name: "AWS Academy Graduate",
