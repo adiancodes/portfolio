@@ -3,7 +3,7 @@ import { About } from "@/components/About";
 import { Experience } from "@/components/Experience";
 import { Projects } from "@/components/Projects";
 import { Certifications } from "@/components/Certifications";
-import { Contact } from "@/components/Contact";
+import { ContactTerminal } from "@/components/ContactTerminal";
 
 export default function Home() {
   return (
@@ -13,7 +13,7 @@ export default function Home() {
       <Experience />
       <Projects />
       <Certifications />
-      <Contact />
+      <ContactTerminal />
     </div>
   );
 }

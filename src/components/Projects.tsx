@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const projectsData = [
   {
+    id: "legal-buddy",
     title: "Pocket Legal Assistant",
     description: "An academic ML application that classifies plain-language legal issues into nine categories. It utilizes a TF-IDF vectorizer and a Support Vector Classifier (SVC) to identify relevant Indian statutes and recommend immediate courses of action.",
     techStack: ["Python", "scikit-learn", "Streamlit", "NLP", "Machine Learning"],
@@ -14,6 +15,7 @@ const projectsData = [
     images: ["/images/legal1.jpeg", "/images/legal2.jpeg"]
   },
   {
+    id: "inventory",
     title: "Smart Inventory Management Platform",
     description: "A robust, real-time inventory tracking system designed to optimize supply chain operations. Built with a scalable Java backend, it features automated stock monitoring, secure RESTful APIs, and role-based access controls for enterprise-grade data management.",
     techStack: ["Java", "Spring Boot", "PostgreSQL", "REST APIs"],
@@ -21,6 +23,7 @@ const projectsData = [
     images: ["/images/inventory1.png", "/images/inventory2.png", "/images/inventory3.png"]
   },
   {
+    id: "sumeazy",
     title: "Sumeazy: AI Summarizer",
     description: "An NLP-driven web application that generates concise summaries for news articles and YouTube videos. Built with a responsive frontend and engineered with a Flask and PyMongo backend, featuring secure user authentication and history tracking.",
     techStack: ["Python", "Flask", "MongoDB", "AssemblyAI", "NLTK", "Bootstrap"],
@@ -29,6 +32,7 @@ const projectsData = [
     images: ["/images/sumeazy1.png", "/images/sumeazy2.png", "/images/sumeazy3.png"]
   },
   {
+    id: "medbot",
     title: "MedBot: Medical Document Q&A",
     description: "A Retrieval-Augmented Generation (RAG) system that allows users to query medical PDFs and receive context-aware answers. It utilizes FAISS for efficient vector similarity search and integrates Google Gemini AI to process relevant document chunks, ensuring data privacy and source transparency.",
     techStack: ["Python", "Google Gemini API", "FAISS", "Streamlit", "RAG"],
@@ -50,12 +54,25 @@ const slideVariants = {
   })
 }
 
-const ProjectItem = ({ project, index }: { project: typeof projectsData[0], index: number }) => {
+const ProjectItem = ({ 
+  project, 
+  index, 
+  focusedProjectId, 
+  setFocusedProjectId 
+}: { 
+  project: typeof projectsData[0], 
+  index: number,
+  focusedProjectId: string | null,
+  setFocusedProjectId: (id: string | null) => void
+}) => {
   const containerRef = useRef<HTMLDivElement>(null)
-
+  
   // Carousel State
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState(1)
+  
+  // Iframe state
+  const [iframeLoaded, setIframeLoaded] = useState(false)
 
   const handleNext = () => {
     setDirection(1)
@@ -78,45 +95,106 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
 
   // Alternate layouts left/right based on index
   const isEven = index % 2 === 0
+  const isFocused = focusedProjectId === project.id
+  const isInteractive = project.id === "legal-buddy"
 
   return (
-    <div ref={containerRef} className="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-32 md:mb-48">
+    <div ref={containerRef} className={`relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-32 md:mb-48 ${isFocused ? 'z-[100]' : 'z-10'}`}>
 
       {/* DOM-Based 3D Laptop Mockup */}
-      <div className={`col-span-1 lg:col-span-7 relative z-10 h-[300px] md:h-[400px] lg:h-[500px] flex items-center justify-center order-last ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
+      <div className={`col-span-1 lg:col-span-7 relative h-[300px] md:h-[400px] lg:h-[500px] flex items-center justify-center order-last ${isEven ? 'lg:order-1' : 'lg:order-2'} ${isFocused ? 'z-[100]' : 'z-10'}`}>
 
-        {/* Laptop Wrapper with Perspective */}
-        <div
-          className="relative w-full max-w-[600px] aspect-[16/10] flex flex-col items-center justify-end mb-16 md:mb-0"
-          style={{ perspective: "1000px" }}
+        {/* Laptop Wrapper with Perspective and Zoom Animation */}
+        <motion.div
+          layout
+          className={
+            isFocused 
+              ? "fixed top-0 left-0 right-0 bottom-0 m-auto z-[200] flex flex-col items-center justify-end" 
+              : "relative w-full max-w-[600px] mx-auto flex flex-col items-center justify-end mb-16 md:mb-0 z-10"
+          }
+          style={{ 
+            width: isFocused ? "90vw" : "100%", 
+            maxWidth: isFocused ? "1000px" : "600px",
+            aspectRatio: "16/10",
+            perspective: "1000px" 
+          }}
+          variants={{
+            default: { 
+              rotateX: 0, 
+              rotateY: 0, 
+              z: 0 
+            },
+            focused: { 
+              rotateX: 0, 
+              rotateY: 0, 
+              z: 0 
+            }
+          }}
+          initial="default"
+          animate={isFocused ? "focused" : "default"}
+          transition={{ type: "spring", stiffness: 120, damping: 25, delay: 0.1 }}
         >
+          {/* Close Demo Button */}
+          {isFocused && (
+            <motion.button
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={() => setFocusedProjectId(null)}
+              className="fixed top-8 right-8 px-6 py-2 font-mono text-sm border-2 border-white/40 bg-slate-900/90 backdrop-blur-md text-white rounded-md hover:bg-white/10 hover:border-white transition-all z-[210] shadow-2xl"
+            >
+              [ X Close Demo ]
+            </motion.button>
+          )}
+
           {/* The Lid (Screen) - Hinges open from the bottom */}
           <motion.div
             style={{
-              rotateX,
+              rotateX: isFocused ? 0 : rotateX,
               transformOrigin: "bottom center",
               transformStyle: "preserve-3d",
             }}
+            transition={{ type: "spring", stiffness: 120, damping: 25 }}
             className="relative w-[90%] aspect-[16/10] bg-slate-900 rounded-t-xl lg:rounded-t-3xl border-4 border-slate-800 border-b-0 overflow-hidden shadow-2xl z-20"
           >
-            {/* Screen Content / Image Carousel */}
+            {/* Screen Content */}
             <div className="absolute inset-1 bg-black rounded-t-lg lg:rounded-t-2xl overflow-hidden flex items-center justify-center">
-              <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-                <AnimatePresence initial={false} custom={direction}>
-                  <motion.img
-                    key={currentIndex}
-                    src={project.images[currentIndex]}
-                    alt={`${project.title} screenshot ${currentIndex + 1}`}
-                    custom={direction}
-                    variants={slideVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{ ease: [0.33, 1, 0.68, 1], duration: 0.8 }}
-                    className="absolute top-0 left-0 w-full h-full object-cover"
+              
+              {isInteractive && isFocused ? (
+                // --- FOCUS MODE: LIVE IFRAME ---
+                <div className="absolute inset-0 w-full h-full bg-black pointer-events-auto">
+                  {!iframeLoaded && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 z-10 gap-4">
+                      <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
+                      <p className="font-mono text-primary text-[10px] md:text-xs tracking-widest uppercase">System Booting... Please Wait</p>
+                    </div>
+                  )}
+                  {/* @ts-ignore */}
+                  <iframe
+                    src={project.liveLink}
+                    onLoad={() => setIframeLoaded(true)}
+                    allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; encrypted-media; usb"
+                    className="w-full h-full border-none relative z-20"
                   />
-                </AnimatePresence>
-              </div>
+                </div>
+              ) : (
+                // --- DEFAULT MODE: IMAGE CAROUSEL ---
+                <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                  <AnimatePresence initial={false} custom={direction}>
+                    <motion.img
+                      key={currentIndex}
+                      src={project.images[currentIndex]}
+                      alt={`${project.title} screenshot ${currentIndex + 1}`}
+                      custom={direction}
+                      variants={slideVariants}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={{ ease: [0.33, 1, 0.68, 1], duration: 0.8 }}
+                      className="absolute top-0 left-0 w-full h-full object-cover"
+                    />
+                  </AnimatePresence>
+                </div>
+              )}
             </div>
           </motion.div>
 
@@ -126,52 +204,54 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
             <div className="w-1/6 h-[4px] bg-slate-400 dark:bg-slate-800 rounded-b-md mx-auto absolute top-0"></div>
           </div>
 
-          {/* Navigation Controls (Keyboard-Style Arrows) */}
-          <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-4 z-30">
-            <motion.button
-              onClick={handlePrev}
-              aria-label="Previous image"
-              whileHover="hover"
-              whileTap="tap"
-              variants={{
-                hover: { scale: 1.05, boxShadow: "0px 0px 8px rgba(0, 229, 255, 0.4)" },
-                tap: {
-                  scale: 0.92,
-                  backgroundColor: "rgba(0, 229, 255, 0.1)",
-                  borderColor: "rgba(0, 229, 255, 1)",
-                  boxShadow: "inset 0px 2px 4px rgba(0,0,0,0.2)"
-                }
-              }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              className="w-10 h-10 flex items-center justify-center rounded-md border border-slate-900 dark:border-white text-slate-900 dark:text-white hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-colors duration-300 shadow-sm bg-background"
-            >
-              <motion.div variants={{ tap: { x: -2 } }}>
-                <ChevronLeft className="w-5 h-5" />
-              </motion.div>
-            </motion.button>
-            <motion.button
-              onClick={handleNext}
-              aria-label="Next image"
-              whileHover="hover"
-              whileTap="tap"
-              variants={{
-                hover: { scale: 1.05, boxShadow: "0px 0px 8px rgba(0, 229, 255, 0.4)" },
-                tap: {
-                  scale: 0.92,
-                  backgroundColor: "rgba(0, 229, 255, 0.1)",
-                  borderColor: "rgba(0, 229, 255, 1)",
-                  boxShadow: "inset 0px 2px 4px rgba(0,0,0,0.2)"
-                }
-              }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              className="w-10 h-10 flex items-center justify-center rounded-md border border-slate-900 dark:border-white text-slate-900 dark:text-white hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-colors duration-300 shadow-sm bg-background"
-            >
-              <motion.div variants={{ tap: { x: 2 } }}>
-                <ChevronRight className="w-5 h-5" />
-              </motion.div>
-            </motion.button>
-          </div>
-        </div>
+          {/* Navigation Controls (Keyboard-Style Arrows) - Hidden in Focus Mode */}
+          {!isFocused && (
+            <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-4 z-30 pointer-events-auto">
+              <motion.button
+                onClick={handlePrev}
+                aria-label="Previous image"
+                whileHover="hover"
+                whileTap="tap"
+                variants={{
+                  hover: { scale: 1.05, boxShadow: "0px 0px 8px rgba(0, 229, 255, 0.4)" },
+                  tap: {
+                    scale: 0.92,
+                    backgroundColor: "rgba(0, 229, 255, 0.1)",
+                    borderColor: "rgba(0, 229, 255, 1)",
+                    boxShadow: "inset 0px 2px 4px rgba(0,0,0,0.2)"
+                  }
+                }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="w-10 h-10 flex items-center justify-center rounded-md border border-slate-900 dark:border-white text-slate-900 dark:text-white hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-colors duration-300 shadow-sm bg-background"
+              >
+                <motion.div variants={{ tap: { x: -2 } }}>
+                  <ChevronLeft className="w-5 h-5" />
+                </motion.div>
+              </motion.button>
+              <motion.button
+                onClick={handleNext}
+                aria-label="Next image"
+                whileHover="hover"
+                whileTap="tap"
+                variants={{
+                  hover: { scale: 1.05, boxShadow: "0px 0px 8px rgba(0, 229, 255, 0.4)" },
+                  tap: {
+                    scale: 0.92,
+                    backgroundColor: "rgba(0, 229, 255, 0.1)",
+                    borderColor: "rgba(0, 229, 255, 1)",
+                    boxShadow: "inset 0px 2px 4px rgba(0,0,0,0.2)"
+                  }
+                }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="w-10 h-10 flex items-center justify-center rounded-md border border-slate-900 dark:border-white text-slate-900 dark:text-white hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-colors duration-300 shadow-sm bg-background"
+              >
+                <motion.div variants={{ tap: { x: 2 } }}>
+                  <ChevronRight className="w-5 h-5" />
+                </motion.div>
+              </motion.button>
+            </div>
+          )}
+        </motion.div>
       </div>
 
       {/* Project Text Content */}
@@ -185,7 +265,8 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
             transition: { staggerChildren: 0.2, duration: 0.6, ease: "easeOut" }
           }
         }}
-        className={`col-span-1 lg:col-span-5 relative z-40 mt-8 lg:mt-0 order-first ${isEven ? 'lg:order-2 text-left' : 'lg:order-1 lg:text-right'}`}
+        // Fade out text drastically during focus mode
+        className={`col-span-1 lg:col-span-5 relative mt-8 lg:mt-0 order-first ${isEven ? 'lg:order-2 text-left' : 'lg:order-1 lg:text-right'} ${isFocused ? 'opacity-0 pointer-events-none' : 'opacity-100 z-40'} transition-opacity duration-500`}
       >
         <motion.p
           variants={{ hidden: { y: 50, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
@@ -198,7 +279,7 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
           variants={{ hidden: { y: 50, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
           className="text-3xl lg:text-4xl font-bold text-foreground mb-6 tracking-tight hover:text-primary transition-colors duration-300"
         >
-          {/* @ts-ignore - liveLink is optional */}
+          {/* @ts-ignore */}
           {project.liveLink ? (
             // @ts-ignore
             <a href={project.liveLink} target="_blank" rel="noopener noreferrer">
@@ -247,6 +328,15 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
               </svg>
             </a>
           )}
+          {/* The Interact Button for Demo Projects */}
+          {isInteractive && (
+            <button 
+              onClick={() => setFocusedProjectId(project.id)}
+              className="px-4 py-1.5 ml-2 text-xs font-mono text-primary border border-primary/50 rounded hover:bg-primary/10 transition-colors"
+            >
+              [ Interact ]
+            </button>
+          )}
         </motion.div>
       </motion.div>
     </div>
@@ -254,7 +344,10 @@ const ProjectItem = ({ project, index }: { project: typeof projectsData[0], inde
 }
 
 export const Projects = () => {
+  const [focusedProjectId, setFocusedProjectId] = useState<string | null>(null)
+
   return (
+    // Restored overflow-hidden since the fixed layout handles the breakout natively
     <section id="projects" className="py-32 max-w-6xl mx-auto px-4 md:px-0 overflow-hidden">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
@@ -269,7 +362,13 @@ export const Projects = () => {
 
       <div>
         {projectsData.map((project, index) => (
-          <ProjectItem key={index} project={project} index={index} />
+          <ProjectItem 
+            key={index} 
+            project={project} 
+            index={index} 
+            focusedProjectId={focusedProjectId}
+            setFocusedProjectId={setFocusedProjectId}
+          />
         ))}
       </div>
     </section>

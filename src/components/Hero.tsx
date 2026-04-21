@@ -233,7 +233,7 @@ export const Hero = () => {
             transition={{ type: "spring", stiffness: 50, damping: 20, delay: 0.65 }}
           >
             <a
-              href="/ResumeAutoDesk.pdf"
+              href="/Resume_OFF_Aditya.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block px-8 py-4 border border-primary text-primary font-mono text-xs tracking-[0.2em] uppercase hover:bg-primary hover:text-background transition-all duration-500"
