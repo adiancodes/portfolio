@@ -15,8 +15,13 @@ export const ContactTerminal = () => {
   const inputRef = useRef<HTMLInputElement>(null)
   const endOfTerminalRef = useRef<HTMLDivElement>(null)
 
-  // Trigger boot sequence when user scrolls to section
-  const isInView = useInView(containerRef, { once: true, margin: "-200px" })
+  // Boot sequence: fires once when the section enters the viewport
+  // once:true prevents the boot from re-running if the user scrolls away and back
+  const isInView = useInView(containerRef, { once: true, margin: "-150px" })
+
+  // Live inView (once:false) — only used for focus management so we don't steal
+  // focus from the Hero section on initial page load
+  const isVisibleNow = useInView(containerRef, { once: false, margin: "-80px" })
 
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [input, setInput] = useState('')
@@ -24,17 +29,18 @@ export const ContactTerminal = () => {
   const [userData, setUserData] = useState({ name: '', email: '', message: '' })
   const [isBooting, setIsBooting] = useState(false)
 
-  // Auto-scroll to bottom of terminal when history updates
+  // Auto-scroll INSIDE the terminal box only — guard against empty history on mount
   useEffect(() => {
-    endOfTerminalRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (history.length === 0) return  // don't scroll the page on initial render
+    endOfTerminalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }, [history, input])
 
-  // Automatically focus the hidden input field when terminal is active
+  // Only focus the input when the terminal is ACTUALLY visible on screen right now
   useEffect(() => {
-    if (isInView && !isBooting && step > 0 && step < 4) {
+    if (isVisibleNow && !isBooting && step > 0 && step < 4) {
       setTimeout(() => inputRef.current?.focus(), 100)
     }
-  }, [isInView, isBooting, step])
+  }, [isVisibleNow, isBooting, step])
 
   // Click anywhere on terminal to regain focus (helpful for mobile)
   const handleTerminalClick = () => {

@@ -9,6 +9,9 @@ export const Preloader = () => {
   const fullText = "> WELCOME TO THE PORTFOLIO OF..."
 
   useEffect(() => {
+    // Lock page scroll while the preloader is active so nothing steals scroll position
+    document.body.style.overflow = 'hidden'
+
     // Typewriter effect
     let currentIndex = 0
     const intervalId = setInterval(() => {
@@ -20,14 +23,17 @@ export const Preloader = () => {
       }
     }, 50)
 
-    // Remove preloader after 2.5 seconds
+    // Remove preloader after 2.5 seconds, restore scroll, force position to top
     const timeoutId = setTimeout(() => {
+      document.body.style.overflow = ''
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })
       setIsLoading(false)
     }, 2500)
 
     return () => {
       clearInterval(intervalId)
       clearTimeout(timeoutId)
+      document.body.style.overflow = ''
     }
   }, [])
 
