@@ -8,6 +8,7 @@ import { RightSidebar } from "@/components/Layout/RightSidebar";
 
 import { Background } from "@/components/Background";
 import { Preloader } from "@/components/Preloader";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,6 +40,7 @@ export default function RootLayout({
             <main className="flex-grow">{children}</main>
           </div>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
