@@ -29,8 +29,7 @@ export const About = () => {
           className="text-foreground/80 leading-relaxed space-y-4"
         >
           <p>
-            Hello! My name is Aditya, and I enjoy building the invisible engines that power the web. My coding journey really took off when I realized I love solving complex logical puzzles and figuring out how data flows behind the scenes.
-          </p>
+            Hello! My name is Aditya. My start in tech wasn't exactly planned. It actually began with a bricked phone and a custom ROM. I was trying to push my hardware as far as it would go, and after digging into Android kernels to save my device, I realized I didn't want to just use technology rather I wanted to understand the gears behind it.</p>
           <p>
             Fast-forward to today, I'm a 3rd-year Computer Science student at Manipal Institute of Technology specializing in Data Science. Recently, I've had the incredible opportunity to learn about Generative AI directly from scientists at the Amazon ML Summer School and train as a developer at Infosys. These days, my main focus is building solid, reliable backend systems and finding clever ways to integrate AI models into practical applications.
           </p>
@@ -69,6 +68,6 @@ export const About = () => {
           </div>
         </motion.div>
       </div>
-    </section>
+    </section >
   )
 }
