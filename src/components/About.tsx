@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 const techList = [
   "Java", "Spring Boot", "Python", "Flask", "PostgreSQL", "AWS", "RESTful APIs", "Generative AI"
@@ -58,10 +59,13 @@ export const About = () => {
 
           {/* Image Container with blend mode */}
           <div className="relative z-10 bg-primary rounded overflow-hidden">
-            {/* The actual image would go here. We use a placeholder div with mix-blend-multiply */}
-            <div className="w-full aspect-[3/4] mix-blend-multiply filter grayscale contrast-125 transition-all duration-300 ease-in-out group-hover:filter-none group-hover:mix-blend-normal bg-foreground/20">
-              {/* Using a placeholder gradient for the image */}
-              <div className="w-full h-full bg-gradient-to-br from-foreground/40 to-background/20" />
+            <div className="w-full aspect-[3/4] mix-blend-multiply filter grayscale contrast-125 transition-all duration-300 ease-in-out group-hover:filter-none group-hover:mix-blend-normal">
+              <Image
+                src="/images/me.jpeg"
+                alt="Aditya Ranjan"
+                fill
+                className="object-cover"
+              />
             </div>
             {/* Overlay to enforce primary tint */}
             <div className="absolute inset-0 bg-primary/20 transition-opacity duration-300 group-hover:opacity-0 pointer-events-none"></div>

@@ -5,6 +5,12 @@ import { motion } from 'framer-motion'
 
 const achievementsData = [
   {
+    name: "Software Engineer Intern Certification",
+    detail: "HackerRank | April 2026",
+    description: "Validated proficiency in problem-solving, algorithms, and core software development practices.",
+    link: "https://www.hackerrank.com/certificates/69c8393dc2f4"
+  },
+  {
     name: "Global Rank 1 - CodeChef Challenge",
     detail: "CodeChef Weekend Dev Challenge 31 | 2024",
     description: "Secured a perfect score of 600/600 in Data Analysis & Visualization."
@@ -18,13 +24,13 @@ const achievementsData = [
     name: "AWS Academy Graduate",
     detail: "Amazon Web Services | Dec 2025",
     description: "Certified in Cloud Foundations, covering cloud infrastructure and security.",
-    link: "https://example.com/aws-cert"
+    link: "https://www.credly.com/go/2ZvHlR6p"
   },
   {
     name: "Agile Scrum Certified",
     detail: "Infosys | June 2025",
     description: "Certified in Agile Scrum methodologies and best practices in software development.",
-    link: "https://example.com/scrum-cert"
+    link: "https://drive.google.com/file/d/1IEvzhLbCa7djKUDgE1j4M-6h74BmsIHh/view?usp=drive_link"
   }
 ]
 
