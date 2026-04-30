@@ -110,7 +110,7 @@ export const Certifications = () => {
                       hidden: { y: "100%" },
                       visible: { y: 0, transition: { ease: [0.33, 1, 0.68, 1], duration: 1 } }
                     }}
-                    className="inline-block font-mono text-xs md:text-sm text-primary hover:text-primary/70 hover:underline underline-offset-4 transition-all"
+                    className="inline-block px-5 py-2.5 bg-primary/10 border border-primary/20 rounded-md font-mono text-xs md:text-sm text-primary hover:bg-primary/20 transition-all mt-2"
                   >
                     View Credential &rarr;
                   </motion.a>

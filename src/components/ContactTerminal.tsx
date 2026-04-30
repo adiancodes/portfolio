@@ -38,14 +38,14 @@ export const ContactTerminal = () => {
   // Only focus the input when the terminal is ACTUALLY visible on screen right now
   useEffect(() => {
     if (isVisibleNow && !isBooting && step > 0 && step < 4) {
-      setTimeout(() => inputRef.current?.focus(), 100)
+      setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 100)
     }
   }, [isVisibleNow, isBooting, step])
 
   // Click anywhere on terminal to regain focus (helpful for mobile)
   const handleTerminalClick = () => {
     if (step > 0 && step < 4) {
-      inputRef.current?.focus()
+      inputRef.current?.focus({ preventScroll: true })
     }
   }
 
@@ -76,6 +76,12 @@ export const ContactTerminal = () => {
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && input.trim() !== '') {
       const currentInput = input.trim()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+        
       setInput('')
 
       // Print user input to terminal
@@ -157,7 +163,7 @@ export const ContactTerminal = () => {
           whileInView={{ y: "0%" }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.7, ease: [0.33, 1, 0.68, 1] }}
-          className="text-5xl md:text-7xl font-bold text-foreground tracking-tight text-center"
+          className="text-4xl sm:text-5xl md:text-7xl font-bold text-foreground tracking-tight text-center"
         >
           Get In Touch
         </motion.h2>

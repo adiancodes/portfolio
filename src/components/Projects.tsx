@@ -1,8 +1,9 @@
 "use client"
 
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import Image from 'next/image'
 
 const projectsData = [
   {
@@ -74,6 +75,15 @@ const ProjectItem = ({
   // Iframe state
   const [iframeLoaded, setIframeLoaded] = useState(false)
 
+  // Mobile detection
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    handleResize() // init
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   const handleNext = () => {
     setDirection(1)
     setCurrentIndex((prev) => (prev + 1) % project.images.length)
@@ -99,10 +109,10 @@ const ProjectItem = ({
   const isInteractive = project.id === "legal-buddy"
 
   return (
-    <div ref={containerRef} className={`relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-32 md:mb-48 ${isFocused ? 'z-[100]' : 'z-10'}`}>
+    <div ref={containerRef} className={`relative flex flex-col-reverse lg:grid lg:grid-cols-12 gap-8 items-center mb-32 md:mb-48 ${isFocused ? 'z-[100]' : 'z-10'}`}>
 
       {/* DOM-Based 3D Laptop Mockup */}
-      <div className={`col-span-1 lg:col-span-7 relative h-[300px] md:h-[400px] lg:h-[500px] flex items-center justify-center order-last ${isEven ? 'lg:order-1' : 'lg:order-2'} ${isFocused ? 'z-[100]' : 'z-10'}`}>
+      <div className={`w-full lg:col-span-7 relative h-[300px] md:h-[400px] lg:h-[500px] flex items-center justify-center ${isEven ? 'lg:order-1' : 'lg:order-2'} ${isFocused ? 'z-[100]' : 'z-10'}`}>
 
         {/* Laptop Wrapper with Perspective and Zoom Animation */}
         <motion.div
@@ -116,7 +126,8 @@ const ProjectItem = ({
             width: isFocused ? "90vw" : "100%", 
             maxWidth: isFocused ? "1000px" : "600px",
             aspectRatio: "16/10",
-            perspective: "1000px" 
+            perspective: "1000px",
+            scale: isMobile && !isFocused ? 0.9 : 1
           }}
           variants={{
             default: { 
@@ -149,7 +160,7 @@ const ProjectItem = ({
           {/* The Lid (Screen) - Hinges open from the bottom */}
           <motion.div
             style={{
-              rotateX: isFocused ? 0 : rotateX,
+              rotateX: isFocused || isMobile ? 0 : rotateX,
               transformOrigin: "bottom center",
               transformStyle: "preserve-3d",
             }}
@@ -173,6 +184,7 @@ const ProjectItem = ({
                     src={project.liveLink}
                     onLoad={() => setIframeLoaded(true)}
                     allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; encrypted-media; usb"
+                    sandbox="allow-scripts allow-same-origin allow-forms"
                     className="w-full h-full border-none relative z-20"
                   />
                 </div>
@@ -180,18 +192,23 @@ const ProjectItem = ({
                 // --- DEFAULT MODE: IMAGE CAROUSEL ---
                 <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                   <AnimatePresence initial={false} custom={direction}>
-                    <motion.img
+                    <motion.div
                       key={currentIndex}
-                      src={project.images[currentIndex]}
-                      alt={`${project.title} screenshot ${currentIndex + 1}`}
                       custom={direction}
                       variants={slideVariants}
                       initial="enter"
                       animate="center"
                       exit="exit"
                       transition={{ ease: [0.33, 1, 0.68, 1], duration: 0.8 }}
-                      className="absolute top-0 left-0 w-full h-full object-cover"
-                    />
+                      className="absolute top-0 left-0 w-full h-full"
+                    >
+                      <Image
+                        src={project.images[currentIndex]}
+                        alt={`${project.title} screenshot ${currentIndex + 1}`}
+                        fill
+                        className="object-contain"
+                      />
+                    </motion.div>
                   </AnimatePresence>
                 </div>
               )}
@@ -266,7 +283,7 @@ const ProjectItem = ({
           }
         }}
         // Fade out text drastically during focus mode
-        className={`col-span-1 lg:col-span-5 relative mt-8 lg:mt-0 order-first ${isEven ? 'lg:order-2 text-left' : 'lg:order-1 lg:text-right'} ${isFocused ? 'opacity-0 pointer-events-none' : 'opacity-100 z-40'} transition-opacity duration-500`}
+        className={`w-full lg:col-span-5 relative mt-8 lg:mt-0 ${isEven ? 'lg:order-2 text-left' : 'lg:order-1 lg:text-right'} ${isFocused ? 'opacity-0 pointer-events-none' : 'opacity-100 z-40'} transition-opacity duration-500`}
       >
         <motion.p
           variants={{ hidden: { y: 50, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
@@ -277,7 +294,7 @@ const ProjectItem = ({
 
         <motion.h3
           variants={{ hidden: { y: 50, opacity: 0 }, visible: { y: 0, opacity: 1 } }}
-          className="text-3xl lg:text-4xl font-bold text-foreground mb-6 tracking-tight hover:text-primary transition-colors duration-300"
+          className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6 tracking-tight hover:text-primary transition-colors duration-300"
         >
           {/* @ts-ignore */}
           {project.liveLink ? (
@@ -332,7 +349,7 @@ const ProjectItem = ({
           {isInteractive && (
             <button 
               onClick={() => setFocusedProjectId(project.id)}
-              className="px-4 py-1.5 ml-2 text-xs font-mono text-primary border border-primary/50 rounded hover:bg-primary/10 transition-colors"
+              className="px-6 py-3 ml-2 text-sm md:text-base font-mono text-primary border border-primary/50 rounded hover:bg-primary/10 transition-colors"
             >
               [ Interact ]
             </button>
